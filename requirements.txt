@@ -1,2 +1,6 @@
 openai
 langchain_community
+langchain 
+langchain-community 
+langchain-openai 
+python-dotenv
