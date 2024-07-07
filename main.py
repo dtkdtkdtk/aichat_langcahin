@@ -22,8 +22,22 @@ st.sidebar.markdown("**Total cost**")
 for i in range(3):
     st.sidebar.markdown(f"- ${i+0.01}")  # 説明のためのダミー
 
+def select_model():
+    model = st.sidebar.radio("Choose a model:", ("GPT-3.5", "GPT-4"))
+    if model == "GPT-3.5":
+        model_name = "gpt-3.5-turbo-0613"
+    else:
+        model_name = "gpt-4"
+
+    # サイドバーにスライダーを追加し、temperatureを0から2までの範囲で選択可能にする
+    # 初期値は0.0、刻み幅は0.1とする
+    temperature = st.sidebar.slider("Temperature:", min_value=0.0, max_value=2.0, value=0.0, step=0.01)
+
+    return ChatOpenAI(temperature=temperature, model_name=model_name)
+
+
 def init_page():
-    llm = ChatOpenAI(temperature=0)
+    llm = select_model()
 
     st.set_page_config(
         page_title="My Great ChatGPT",
@@ -56,27 +70,8 @@ def init_page():
         else:  # isinstance(message, SystemMessage):
             st.write(f"System message: {message.content}")
 
-def select_model():
-    model = st.sidebar.radio("Choose a model:", ("GPT-3.5", "GPT-4"))
-    if model == "GPT-3.5":
-        model_name = "gpt-3.5-turbo-0613"
-    else:
-        model_name = "gpt-4"
 
-    return ChatOpenAI(temperature=0, model_name=model_name)
 
-def select_model():
-    model = st.sidebar.radio("Choose a model:", ("GPT-3.5", "GPT-4"))
-    if model == "GPT-3.5":
-        model_name = "gpt-3.5-turbo-0613"
-    else:
-        model_name = "gpt-4"
-
-    # サイドバーにスライダーを追加し、temperatureを0から2までの範囲で選択可能にする
-    # 初期値は0.0、刻み幅は0.1とする
-    temperature = st.sidebar.slider("Temperature:", min_value=0.0, max_value=2.0, value=0.0, step=0.01)
-
-    return ChatOpenAI(temperature=temperature, model_name=model_name)
 
 def init_messages():
     clear_button = st.sidebar.button("Clear Conversation", key="clear")
@@ -88,7 +83,6 @@ def init_messages():
 
 def main():
     init_page()
-    llm = select_model()
     init_messages()
 
 
