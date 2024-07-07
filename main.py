@@ -4,7 +4,11 @@ from langchain.schema import (SystemMessage, HumanMessage, AIMessage)
 
 
 def main():
-    llm = ChatOpenAI(temperature=0)
+    try:
+        llm = ChatOpenAI(temperature=0)
+    except Exception as e:
+        st.error(f"Error creating ChatOpenAI instance: {e}")
+        return
 
     st.set_page_config(
         page_title="My Great ChatGPT",
@@ -22,8 +26,11 @@ def main():
     if user_input := st.chat_input("聞きたいことを入力してね！"):
         st.session_state.messages.append(HumanMessage(content=user_input))
         with st.spinner("ChatGPT is typing ..."):
-            response = llm(st.session_state.messages)
-        st.session_state.messages.append(AIMessage(content=response.content))
+            try:
+                response = llm(st.session_state.messages)
+                st.session_state.messages.append(AIMessage(content=response.content))
+            except Exception as e:
+                st.error(f"Error during ChatOpenAI response: {e}")
 
     # チャット履歴の表示
     messages = st.session_state.get('messages', [])
